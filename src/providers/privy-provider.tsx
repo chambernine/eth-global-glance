@@ -1,12 +1,23 @@
 "use client";
 
 import { PrivyProvider } from "@privy-io/react-auth";
+import { useTheme } from "next-themes";
 
 export default function PrivyClientProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { theme } = useTheme();
+
+  let isDarkMode = false;
+  if (typeof window !== "undefined") {
+    const prefersDarkMode = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    isDarkMode = theme === "dark" || (theme === "system" && prefersDarkMode);
+  }
+
   return (
     <PrivyProvider
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ""}
@@ -14,7 +25,7 @@ export default function PrivyClientProvider({
         loginMethods: ["farcaster"],
 
         appearance: {
-          theme: "light",
+          theme: isDarkMode ? "dark" : "light",
           accentColor: "#676FFF",
           // logo: "https://your-logo-url",
           showWalletLoginFirst: false,

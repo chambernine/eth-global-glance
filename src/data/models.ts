@@ -10,9 +10,9 @@ interface modelsProps {
 
 export const models: modelsProps[] = [
   {
-    id: "sports",
-    name: "Sports",
-    category: "sports",
+    id: "sport",
+    name: "Glance Sports",
+    category: "sport",
     description:
       "Make predictions about sports events, team performance, player statistics, and tournament outcomes. This model analyzes historical match data, player statistics, team rankings, and current form to help users create informed predictions.",
     examplePolls: [
@@ -26,7 +26,7 @@ export const models: modelsProps[] = [
   },
   {
     id: "crypto",
-    name: "Crypto",
+    name: "Glance Crypto",
     category: "crypto",
     description:
       "Create predictions about cryptocurrency price movements, market trends, and adoption metrics. This model incorporates market sentiment analysis, trading volumes, historical price data, and broader market indicators.",
@@ -41,7 +41,7 @@ export const models: modelsProps[] = [
   },
   {
     id: "entertainment",
-    name: "Entertainment",
+    name: "Glance Entertainment",
     category: "entertainment",
     description:
       "Predict outcomes in entertainment industry events, including award shows, box office performance, streaming rankings, and content popularity. This model analyzes social media trends, critic reviews, and historical entertainment data.",
@@ -56,7 +56,7 @@ export const models: modelsProps[] = [
   },
   {
     id: "politics",
-    name: "Politics",
+    name: "Glance Politics",
     category: "politics",
     description:
       "Create predictions about election outcomes, policy changes, and political events. This model analyzes polling data, historical voting patterns, demographic information, and current political trends while maintaining neutrality.",

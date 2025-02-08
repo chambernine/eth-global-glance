@@ -1,6 +1,7 @@
 import PrivyClientProvider from "@/providers/privy-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -10,9 +11,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <PrivyClientProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </PrivyClientProvider>
+        <ThemeProvider>
+          <PrivyClientProvider>
+            {children}
+            <Toaster />
+          </PrivyClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
