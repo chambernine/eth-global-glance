@@ -13,7 +13,6 @@ import Orb from "@/components/ui/orb";
 import Image from "next/image";
 import { models } from "@/data/models";
 import { useToast } from "@/hooks/use-toast";
-import ConfettiEffect from "@/components/ui/confetti-effect";
 import usePollService from "@/service/poll";
 
 interface EmotionStyle {
@@ -37,7 +36,6 @@ export default function CreatePoll() {
   const [selectedEmotion, setSelectedEmotion] = useState("");
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState(["", ""]);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -69,6 +67,20 @@ export default function CreatePoll() {
     }
   };
 
+  const handleNext = async () => {
+    if (currentStep < steps.length - 1 && canProceed()) {
+      if (currentStep === 0) {
+        await fetchPollQuestion();
+      }
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const fetchPollQuestion = async () => {
     try {
       setIsLoading(true);
@@ -77,7 +89,6 @@ export default function CreatePoll() {
       });
 
       setCurrentStep(currentStep + 1);
-      setShowConfetti(true);
 
       setQuestion(data.question);
       setAnswers(data.choices || ["", ""]);
@@ -92,19 +103,29 @@ export default function CreatePoll() {
     }
   };
 
-  const handleNext = async () => {
-    if (currentStep < steps.length - 1 && canProceed()) {
-      if (currentStep === 0) {
-        await fetchPollQuestion();
-        setShowConfetti(false);
-      }
+  const fetchPollWithEmotion = async (emotion: string) => {
+    try {
+      setIsLoading(true);
+      const { data } = await createPoll({
+        category: selectedModel,
+        emotional: emotion,
+      });
+      setQuestion(data.question);
+      setAnswers(data.choices || ["", ""]);
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to regenerate poll question. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+  const handleEmotionChange = (emotion: string) => {
+    setSelectedEmotion(emotion);
+    fetchPollWithEmotion(emotion);
   };
 
   return (
@@ -229,7 +250,7 @@ export default function CreatePoll() {
                   <Label>Choose Emotion Style</Label>
                   <RadioGroup
                     value={selectedEmotion}
-                    onValueChange={setSelectedEmotion}
+                    onValueChange={handleEmotionChange}
                     className="flex justify-between"
                   >
                     {emotionStyles.map((emotion) => (
@@ -282,22 +303,16 @@ export default function CreatePoll() {
         ) : (
           <Button onClick={handleNext} disabled={!canProceed() || isLoading}>
             {isLoading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+              <div
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 
+              dark:border-black dark:border-t-transparent"
+              />
             ) : null}
             Next
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>
-      <ConfettiEffect
-        trigger={showConfetti}
-        emoji="⭐"
-        particleCount={{
-          primary: 40,
-          secondary: 10,
-          circles: 20,
-        }}
-      />
     </div>
   );
 }

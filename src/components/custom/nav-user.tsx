@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, LogIn, LogOut } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -17,24 +16,50 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
 import { usePrivy } from "@privy-io/react-auth";
 import { Button } from "../ui/button";
 import { ThemeSwitcher } from "./theme-switcher";
+import { WalletSection } from "./wallet-section";
+import { useState } from "react";
+import { useGetBalance } from "@/service/wallet";
 
 export function NavUser() {
   const { isMobile, state } = useSidebar();
   const isExpanded = state === "expanded";
   const { user, authenticated, login, logout, ready } = usePrivy();
+  const [isFaucetLoading, setIsFaucetLoading] = useState(false);
 
   // Extract Farcaster profile data
   const farcasterProfile = user?.farcaster;
+  const wallet = user?.wallet;
+
+  // Add balance fetching
+  const {
+    balance,
+    isLoading: isBalanceLoading,
+    refetch: refetchBalance,
+  } = useGetBalance(wallet?.address);
+
   const displayName = farcasterProfile?.displayName || "Anonymous";
   const username = farcasterProfile?.username
     ? `@${farcasterProfile.username}`
     : user?.email?.address;
   const avatarUrl = farcasterProfile?.pfp || "/avatars/shadcn.jpg";
   const fallbackInitials = displayName?.slice(0, 2)?.toUpperCase() || "AN";
+
+  const handleRequestFaucet = async () => {
+    try {
+      setIsFaucetLoading(true);
+      // Add your faucet request logic here
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
+      // Update balance after successful request
+      await refetchBalance(); // Add this to refresh balance after faucet request
+    } catch (error) {
+      console.error("Failed to request funds:", error);
+    } finally {
+      setIsFaucetLoading(false);
+    }
+  };
 
   if (!ready) {
     return (
@@ -109,8 +134,24 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-
-            <div className="flex justify-between items-center px-1 py-1">
+            <WalletSection
+              address={wallet?.address || ""}
+              balance={isBalanceLoading ? "Loading..." : balance}
+              network="Sepolia BASE"
+              onCopyAddress={() => {
+                navigator.clipboard.writeText(wallet?.address || "");
+              }}
+              onViewExplorer={() => {
+                window.open(
+                  `https://sepolia.basescan.org/address/${wallet?.address}`,
+                  "_blank"
+                );
+              }}
+              onRequestFaucet={handleRequestFaucet}
+              isFaucetLoading={isFaucetLoading}
+            />
+            <DropdownMenuSeparator />
+            <div className="flex justify-between items-center px-1 py-1 h-8">
               <div className="text-sm">Theme</div>
               <ThemeSwitcher />
             </div>

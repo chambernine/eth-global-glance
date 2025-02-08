@@ -10,6 +10,10 @@ const usePollService = () => {
     return axiosInstance.post(`/poll`, data);
   };
 
+  const createPollWithEmotional = (data: PollData) => {
+    return axiosInstance.post(`/poll`, data);
+  };
+
   const getPolls = () => {
     return axiosInstance.get(`/`);
   };
@@ -20,6 +24,7 @@ const usePollService = () => {
 
   return {
     createPoll,
+    createPollWithEmotional,
     getPolls,
     getPollById,
   };
