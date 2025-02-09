@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useGetBalance } from "@/service/server-wallet";
-import { useEffect } from "react";
+import usePollService from "@/service/poll";
 
 interface ServerBalanceProps {
   isExpanded?: boolean;
@@ -27,6 +27,17 @@ export function ServerBalance({ refetchTrigger }: ServerBalanceProps) {
   const { balance, refetch: refetch } = useGetBalance(
     "0xD685CCb5024f83cFFd9a6e782F2c8Fb51d3170A3"
   );
+
+  const { getFundRequest } = usePollService();
+
+  const handleClickTopUp = async () => {
+    try {
+      await getFundRequest();
+      refetch();
+    } catch (error) {
+      console.error("Failed to top up:", error);
+    }
+  };
 
   return (
     <Dialog>
@@ -70,12 +81,7 @@ export function ServerBalance({ refetchTrigger }: ServerBalanceProps) {
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => window.open("https://etherscan.io", "_blank")}
-            >
-              <ExternalLink className="ml-2 h-4 w-4" />
-            </Button>
+            <Button onClick={handleClickTopUp}>Top up</Button>
           </div>
         </div>
       </DialogContent>

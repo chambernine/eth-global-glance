@@ -19,11 +19,6 @@ export default function UserSendPage() {
   );
 
   const { client } = useSmartWallets();
-  const uiOptions = {
-    title: "testtt",
-    description: "Test",
-    buttonText: "Test",
-  };
 
   const handleSendTransaction = async () => {
     setLoading(true);
@@ -37,11 +32,7 @@ export default function UserSendPage() {
         value: valueInWei, // Ensure value is a string
       };
 
-      console.log(transactionRequest);
-
-      const txHash = await client?.sendTransaction(transactionRequest, {
-        uiOptions,
-      });
+      const txHash = await client?.sendTransaction(transactionRequest, {});
       console.log(txHash);
       toast({
         title: "Transaction Successful",

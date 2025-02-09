@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import * as React from "react";
 import {
   Drawer,
   DrawerClose,
@@ -13,19 +13,56 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import ProgressBalance from "../ui/progress-balance";
+import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
+import { baseSepolia } from "viem/chains";
+import { usePrivy } from "@privy-io/react-auth";
+import { ethers } from "ethers";
 
 interface EthUsageDrawerProps {
   balance: number;
   neededEth: number;
   children: React.ReactNode;
+  onProceed: () => void;
 }
 
 export function EthUsageDrawer({
   balance,
   neededEth,
   children,
+  onProceed,
 }: EthUsageDrawerProps) {
   const isEnoughBalance = balance >= neededEth;
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  const { user } = usePrivy();
+  const smartWallet = user?.linkedAccounts.find(
+    (account) => account.type === "smart_wallet"
+  );
+
+  const { client } = useSmartWallets();
+
+  const agentAddress = "0x8B32420E0a08465394682943e5Ccd7F345fe94A8";
+
+  const handleSendTransaction = async () => {
+    try {
+      const amount = neededEth.toString();
+      const valueInWei = ethers.parseUnits(amount, 18);
+
+      const transactionRequest = {
+        chain: baseSepolia,
+        agentAddress,
+        value: valueInWei,
+      };
+
+      const txHash = await client?.sendTransaction(transactionRequest, {});
+      onProceed();
+    } catch (error) {
+      console.error("Error:", error);
+      // Programmatically click the close button when there's an error
+      closeButtonRef.current?.click();
+      onProceed();
+    }
+  };
 
   return (
     <Drawer>
@@ -60,8 +97,10 @@ export function EthUsageDrawer({
           </p>
         </div>
         <DrawerFooter>
-          <Button disabled={!isEnoughBalance}>Proceed</Button>
-          <DrawerClose asChild>
+          <Button disabled={!isEnoughBalance} onClick={handleSendTransaction}>
+            Proceed
+          </Button>
+          <DrawerClose ref={closeButtonRef} asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>

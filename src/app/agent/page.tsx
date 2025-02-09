@@ -12,8 +12,9 @@ import Image from "next/image";
 import { models } from "@/data/models";
 import { useToast } from "@/hooks/use-toast";
 import usePollService from "@/service/poll";
-import UserSendPage from "@/components/custom/user-send";
-import SendPage from "@/components/custom/send";
+import { EthUsageDrawer } from "@/components/custom/eth-usage-drawer";
+import { useGetBalance } from "@/service/user-wallet";
+import { usePrivy } from "@privy-io/react-auth";
 
 interface EmotionStyle {
   id: string;
@@ -42,6 +43,13 @@ export default function CreatePoll() {
   const { toast } = useToast();
 
   const { createPoll, createPollWithEmotional } = usePollService();
+
+  const { user } = usePrivy();
+
+  const wallet = user?.smartWallet;
+  const walletAddress = wallet?.address;
+
+  const { balance } = useGetBalance(walletAddress);
 
   const canProceed = () => {
     switch (currentStep) {
@@ -121,8 +129,6 @@ export default function CreatePoll() {
   return (
     <div className="container max-w-2xl mx-auto py-8 px-4">
       <div className="mb-8">
-        <SendPage />
-        <UserSendPage />
         <div className="flex justify-between">
           {steps.map((step, index) => (
             <div key={step} className="flex flex-col items-center flex-1">
@@ -232,28 +238,33 @@ export default function CreatePoll() {
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {emotionStyles.map((emotion) => (
-                        <Button
+                        <EthUsageDrawer
+                          balance={parseFloat(balance)}
+                          neededEth={0.0000001}
+                          onProceed={() => handleEmotionChange(emotion.id)}
                           key={emotion.id}
-                          variant={
-                            selectedEmotion === emotion.id
-                              ? "default"
-                              : "outline"
-                          }
-                          className="h-auto py-4 flex flex-col items-center justify-center"
-                          onClick={() => handleEmotionChange(emotion.id)}
-                          disabled={isEmotionLoading}
                         >
-                          {isEmotionLoading ? (
-                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mb-2" />
-                          ) : (
-                            <span className="text-4xl mb-2">
-                              {emotion.emoji}
+                          <Button
+                            variant={
+                              selectedEmotion === emotion.id
+                                ? "default"
+                                : "outline"
+                            }
+                            className="h-auto py-4 flex flex-col items-center justify-center"
+                            disabled={isEmotionLoading}
+                          >
+                            {isEmotionLoading ? (
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mb-2" />
+                            ) : (
+                              <span className="text-4xl mb-2">
+                                {emotion.emoji}
+                              </span>
+                            )}
+                            <span className="text-sm font-medium">
+                              {emotion.name}
                             </span>
-                          )}
-                          <span className="text-sm font-medium">
-                            {emotion.name}
-                          </span>
-                        </Button>
+                          </Button>
+                        </EthUsageDrawer>
                       ))}
                     </div>
                   </div>
@@ -282,16 +293,22 @@ export default function CreatePoll() {
           // </Button>
           <div></div>
         ) : (
-          <Button onClick={handleNext} disabled={!canProceed() || isLoading}>
-            {isLoading ? (
-              <div
-                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 
+          <EthUsageDrawer
+            balance={parseFloat(balance)}
+            neededEth={0.000001}
+            onProceed={handleNext}
+          >
+            <Button disabled={!canProceed() || isLoading}>
+              {isLoading ? (
+                <div
+                  className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 
               dark:border-black dark:border-t-transparent"
-              />
-            ) : null}
-            Next
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+                />
+              ) : null}
+              Next
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </EthUsageDrawer>
         )}
       </div>
     </div>

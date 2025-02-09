@@ -25,12 +25,16 @@ const usePollService = () => {
   const getPollById = (id: string) => {
     return axiosInstance.get(`/${id}`);
   };
+  const getFundRequest = () => {
+    return axiosInstance.get(`/fund_request`);
+  };
 
   return {
     createPoll,
     createPollWithEmotional,
     getPolls,
     getPollById,
+    getFundRequest,
   };
 };
 

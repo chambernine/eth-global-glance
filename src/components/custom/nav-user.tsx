@@ -31,14 +31,15 @@ export function NavUser({ onFaucetRequest }: { onFaucetRequest: () => void }) {
 
   // Extract Farcaster profile data
   const farcasterProfile = user?.farcaster;
-  const wallet = user?.wallet;
+  const wallet = user?.smartWallet;
+  const walletAddress = wallet?.address;
 
   // Add balance fetching
   const {
     balance,
     isLoading: isBalanceLoading,
     refetch: refetchBalance,
-  } = useGetBalance(wallet?.address);
+  } = useGetBalance(walletAddress);
 
   const displayName = farcasterProfile?.displayName || "Anonymous";
   const username = farcasterProfile?.username
@@ -50,9 +51,13 @@ export function NavUser({ onFaucetRequest }: { onFaucetRequest: () => void }) {
   const handleRequestFaucet = async () => {
     try {
       setIsFaucetLoading(true);
-      // Add your faucet request logic here
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
-      // Update balance after successful request
+      const response = await fetch("/api/server-wallet/send-transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: walletAddress, amount: "0.00001" }),
+      });
+      console.log(response);
+
       await refetchBalance(); // Add this to refresh balance after faucet request
       onFaucetRequest(); // Trigger refetch of server balance
     } catch (error) {
