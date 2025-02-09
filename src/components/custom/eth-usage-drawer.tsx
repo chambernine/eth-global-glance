@@ -41,7 +41,7 @@ export function EthUsageDrawer({
 
   const { client } = useSmartWallets();
 
-  const agentAddress = "0x8B32420E0a08465394682943e5Ccd7F345fe94A8";
+  const agentAddress = process.env.NEXT_PUBLIC_AGENT_ADDRESS;
 
   const handleSendTransaction = async () => {
     try {

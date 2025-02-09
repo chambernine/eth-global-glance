@@ -27,7 +27,6 @@ export default function PrivyClientProvider({
         appearance: {
           theme: isDarkMode ? "dark" : "light",
           accentColor: "#676FFF",
-          // logo: "https://your-logo-url",
           showWalletLoginFirst: false,
         },
         // Create embedded wallets for users who don't have a wallet
