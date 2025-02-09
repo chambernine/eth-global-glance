@@ -82,7 +82,7 @@ export function EthUsageDrawer({
             </div>
             <div className="text-right">
               <p className="text-sm font-medium">Required ETH</p>
-              <p className="text-2xl font-bold">{neededEth} ETH</p>
+              <p className="text-2xl font-bold">{neededEth.toFixed(7)} ETH</p>
             </div>
           </div>
           <ProgressBalance

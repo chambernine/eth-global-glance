@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useGetBalance } from "@/service/server-wallet";
 import usePollService from "@/service/poll";
+import { useState } from "react";
 
 interface ServerBalanceProps {
   isExpanded?: boolean;
@@ -29,11 +30,14 @@ export function ServerBalance({ refetchTrigger }: ServerBalanceProps) {
   );
 
   const { getFundRequest } = usePollService();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickTopUp = async () => {
+    setIsLoading(true);
     try {
       await getFundRequest();
       refetch();
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to top up:", error);
     }
@@ -81,7 +85,15 @@ export function ServerBalance({ refetchTrigger }: ServerBalanceProps) {
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button onClick={handleClickTopUp}>Top up</Button>
+            <Button onClick={handleClickTopUp} disabled={isLoading}>
+              {isLoading ? (
+                <div
+                  className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 
+              dark:border-black dark:border-t-transparent"
+                />
+              ) : null}
+              Top up
+            </Button>
           </div>
         </div>
       </DialogContent>
