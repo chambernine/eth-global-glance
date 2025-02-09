@@ -29,7 +29,7 @@ An AI-powered polling platform that transforms social media insights into engagi
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/glance-ai-agent.git
+git clone https://github.com/chambernine/glance-ai-agent.git
 cd glance-ai-agent
 ```
 
