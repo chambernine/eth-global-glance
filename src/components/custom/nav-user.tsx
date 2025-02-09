@@ -21,9 +21,9 @@ import { Button } from "../ui/button";
 import { ThemeSwitcher } from "./theme-switcher";
 import { WalletSection } from "./wallet-section";
 import { useState } from "react";
-import { useGetBalance } from "@/service/wallet";
+import { useGetBalance } from "@/service/user-wallet";
 
-export function NavUser() {
+export function NavUser({ onFaucetRequest }: { onFaucetRequest: () => void }) {
   const { isMobile, state } = useSidebar();
   const isExpanded = state === "expanded";
   const { user, authenticated, login, logout, ready } = usePrivy();
@@ -54,6 +54,7 @@ export function NavUser() {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
       // Update balance after successful request
       await refetchBalance(); // Add this to refresh balance after faucet request
+      onFaucetRequest(); // Trigger refetch of server balance
     } catch (error) {
       console.error("Failed to request funds:", error);
     } finally {

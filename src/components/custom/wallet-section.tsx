@@ -26,7 +26,6 @@ export function WalletSection({
   onRequestFaucet,
   isFaucetLoading = false,
 }: WalletSectionProps) {
-  // Truncate address to first 6 and last 4 characters
   const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   return (

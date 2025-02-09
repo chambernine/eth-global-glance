@@ -5,13 +5,17 @@ const usePollService = () => {
     category: string;
     emotional?: string;
   }
+  interface PollEmotionalData {
+    id: string;
+    emotional?: string;
+  }
 
   const createPoll = (data: PollData) => {
-    return axiosInstance.post(`/poll`, data);
+    return axiosInstance.post(`/poll_social`, data);
   };
 
-  const createPollWithEmotional = (data: PollData) => {
-    return axiosInstance.post(`/poll`, data);
+  const createPollWithEmotional = (data: PollEmotionalData) => {
+    return axiosInstance.post(`/poll_social`, data);
   };
 
   const getPolls = () => {

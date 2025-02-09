@@ -5,9 +5,10 @@ import { motion, Variants } from "framer-motion";
 import {
   AlertCircle,
   TrendingUp,
-  Users,
   Brain,
   LucideIcon,
+  Wand,
+  Vote,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -163,7 +164,7 @@ export default function Home() {
           >
             <AlertCircle className="w-5 h-5 text-primary dark:text-blue-400" />
             <span className="text-sm text-muted-foreground dark:text-gray-300 font-medium">
-              AI-Powered Market Intelligence
+              AI-Powered Polling Platform
             </span>
           </motion.div>
 
@@ -175,11 +176,11 @@ export default function Home() {
           >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
               <span className="text-foreground dark:text-gray-100">
-                Predict Markets with
+                Transforming
               </span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 dark:from-blue-400 dark:via-purple-400 dark:to-cyan-400">
-                Social Intelligence
+                Social media engagement
               </span>
             </h1>
           </motion.div>
@@ -191,9 +192,9 @@ export default function Home() {
             animate="visible"
           >
             <p className="text-lg text-muted-foreground dark:text-gray-400 mb-8 leading-relaxed max-w-2xl mx-auto">
-              Harness the power of AI to analyze social sentiment and predict
-              market trends with unprecedented accuracy. Make informed decisions
-              backed by real-time data and advanced analytics.
+              This innovative platform uses AI to provide real-time insights and
+              create engaging polls. Discover how Glance can revolutionize your
+              social media strategy.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -221,19 +222,19 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6 mt-16">
             <FeatureCard
-              icon={Brain}
-              title="AI Analysis"
-              description="Advanced machine learning algorithms process millions of social data points to identify market patterns."
-            />
-            <FeatureCard
               icon={TrendingUp}
-              title="Predictive Insights"
-              description="Get accurate market predictions based on real-time social sentiment analysis and trending topics."
+              title="Trending casts"
+              description="Identify viral topics in real-time. Never miss what's hot."
             />
             <FeatureCard
-              icon={Users}
-              title="Social Signals"
-              description="Track and analyze social media trends, discussions, and sentiment to predict market movements."
+              icon={Wand}
+              title="Story wizard"
+              description="Curate engaging content from social data. It makes compelling narratives."
+            />
+            <FeatureCard
+              icon={Vote}
+              title="Instant polls"
+              description="Gauge public sentiment quickly. Make fast, informed decisions."
             />
           </div>
         </div>

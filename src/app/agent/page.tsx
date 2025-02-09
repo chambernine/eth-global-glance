@@ -4,8 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Share2, ArrowLeft, ArrowRight } from "lucide-react";
@@ -37,24 +35,11 @@ export default function CreatePoll() {
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState(["", ""]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEmotionLoading, setIsEmotionLoading] = useState(false);
+  const [id, setId] = useState("");
   const { toast } = useToast();
 
-  const { createPoll } = usePollService();
-
-  const handleAnswerChange = (index: number, value: string) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = value;
-    setAnswers(newAnswers);
-  };
-
-  const handleShare = () => {
-    console.log({
-      model: selectedModel,
-      emotion: selectedEmotion,
-      question,
-      answers,
-    });
-  };
+  const { createPoll, createPollWithEmotional } = usePollService();
 
   const canProceed = () => {
     switch (currentStep) {
@@ -77,6 +62,7 @@ export default function CreatePoll() {
 
   const handleBack = () => {
     if (currentStep > 0) {
+      setSelectedEmotion("");
       setCurrentStep(currentStep - 1);
     }
   };
@@ -91,6 +77,7 @@ export default function CreatePoll() {
       setCurrentStep(currentStep + 1);
 
       setQuestion(data.question);
+      setId(data.id);
       setAnswers(data.choices || ["", ""]);
     } catch {
       toast({
@@ -105,13 +92,14 @@ export default function CreatePoll() {
 
   const fetchPollWithEmotion = async (emotion: string) => {
     try {
-      setIsLoading(true);
-      const { data } = await createPoll({
-        category: selectedModel,
+      setIsEmotionLoading(true);
+      const { data } = await createPollWithEmotional({
+        id,
         emotional: emotion,
       });
       setQuestion(data.question);
       setAnswers(data.choices || ["", ""]);
+      setSelectedEmotion(emotion);
     } catch {
       toast({
         title: "Error",
@@ -119,18 +107,17 @@ export default function CreatePoll() {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsEmotionLoading(false);
     }
   };
 
-  const handleEmotionChange = (emotion: string) => {
-    setSelectedEmotion(emotion);
-    fetchPollWithEmotion(emotion);
+  const handleEmotionChange = async (emotion: string) => {
+    if (isEmotionLoading) return;
+    await fetchPollWithEmotion(emotion);
   };
 
   return (
     <div className="container max-w-2xl mx-auto py-8 px-4">
-      {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex justify-between">
           {steps.map((step, index) => (
@@ -216,67 +203,56 @@ export default function CreatePoll() {
           )}
 
           {currentStep === 1 && (
-            <Card>
-              <CardContent className="pt-6 space-y-6">
-                <h2 className="text-2xl font-bold mb-6">Create Your Poll</h2>
-                <div className="space-y-2">
-                  <Label htmlFor="question">Question</Label>
-                  <Textarea
-                    id="question"
-                    placeholder="Enter your poll question"
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    className="resize-none"
-                    disabled
-                  />
+            <Card className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white">
+                  <h2 className="text-2xl font-bold ">Your Poll Question</h2>
+                  <p className="text-lg font-medium">{question}</p>
                 </div>
-
-                <div className="space-y-4">
-                  <Label>Answer Choices</Label>
-                  {answers.map((answer, index) => (
-                    <Input
-                      key={index}
-                      placeholder={`Answer ${index + 1}`}
-                      value={answer}
-                      onChange={(e) =>
-                        handleAnswerChange(index, e.target.value)
-                      }
-                      disabled
-                    />
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Choose Emotion Style</Label>
-                  <RadioGroup
-                    value={selectedEmotion}
-                    onValueChange={handleEmotionChange}
-                    className="flex justify-between"
-                  >
-                    {emotionStyles.map((emotion) => (
+                <div className="p-4 space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-md">Answer Choices</h3>
+                    {answers.map((answer, index) => (
                       <div
-                        key={emotion.id}
-                        className="flex flex-col items-center"
+                        key={index}
+                        className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-inner"
                       >
-                        <RadioGroupItem
-                          value={emotion.id}
-                          id={emotion.id}
-                          className="peer sr-only"
-                        />
-                        <Label
-                          htmlFor={emotion.id}
-                          className="flex flex-col items-center justify-center cursor-pointer"
-                        >
-                          <div className="text-4xl mb-2 transition-transform hover:scale-110 peer-data-[state=checked]:scale-125">
-                            {emotion.emoji}
-                          </div>
-                          <div className="text-sm font-medium peer-data-[state=checked]:text-primary">
-                            {emotion.name}
-                          </div>
-                        </Label>
+                        <p className="text-md">{answer}</p>
                       </div>
                     ))}
-                  </RadioGroup>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-md font-semibold">
+                      Choose Emotion Style
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {emotionStyles.map((emotion) => (
+                        <Button
+                          key={emotion.id}
+                          variant={
+                            selectedEmotion === emotion.id
+                              ? "default"
+                              : "outline"
+                          }
+                          className="h-auto py-4 flex flex-col items-center justify-center"
+                          onClick={() => handleEmotionChange(emotion.id)}
+                          disabled={isEmotionLoading}
+                        >
+                          {isEmotionLoading ? (
+                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mb-2" />
+                          ) : (
+                            <span className="text-4xl mb-2">
+                              {emotion.emoji}
+                            </span>
+                          )}
+                          <span className="text-sm font-medium">
+                            {emotion.name}
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -296,10 +272,11 @@ export default function CreatePoll() {
         </Button>
 
         {currentStep === steps.length - 1 ? (
-          <Button onClick={handleShare} disabled={!canProceed()}>
-            <Share2 className="w-4 h-4 mr-2" />
-            Share on Farcaster
-          </Button>
+          // <Button onClick={handleShare} disabled={!canProceed()}>
+          //   <Share2 className="w-4 h-4 mr-2" />
+          //   Share on Farcaster
+          // </Button>
+          <div></div>
         ) : (
           <Button onClick={handleNext} disabled={!canProceed() || isLoading}>
             {isLoading ? (

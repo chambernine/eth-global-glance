@@ -2,7 +2,7 @@
 
 import { PrivyProvider } from "@privy-io/react-auth";
 import { useTheme } from "next-themes";
-
+import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 export default function PrivyClientProvider({
   children,
 }: {
@@ -36,7 +36,7 @@ export default function PrivyClientProvider({
         },
       }}
     >
-      {children}
+      <SmartWalletsProvider>{children}</SmartWalletsProvider>
     </PrivyProvider>
   );
 }

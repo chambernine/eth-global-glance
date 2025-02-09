@@ -1,0 +1,84 @@
+"use client";
+import { Coins, ExternalLink } from "lucide-react";
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useGetBalance } from "@/service/server-wallet";
+import { useEffect } from "react";
+
+interface ServerBalanceProps {
+  isExpanded?: boolean;
+  refetchTrigger: boolean; // Add a prop to trigger refetch
+}
+
+export function ServerBalance({ refetchTrigger }: ServerBalanceProps) {
+  // Add balance fetching
+  const { balance, refetch: refetch } = useGetBalance(
+    "0xD685CCb5024f83cFFd9a6e782F2c8Fb51d3170A3"
+  );
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              className="rounded-lg text-[14px] font-medium backdrop-blur-md
+              bg-white/5 hover:bg-white/10 dark:bg-white/5 dark:hover:bg-white/10
+              text-black dark:text-white/90
+              border border-black/5 dark:border-white/10
+              transition-all duration-200"
+            >
+              <Coins className="h-4 w-4 opacity-70" />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>ETH Faucet Balance</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none text-muted-foreground">
+                    Available ETH
+                  </p>
+                  <p className="text-2xl font-bold">{balance} ETH</p>
+                </div>
+                <Coins className="h-8 w-8 opacity-70" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="text-sm text-muted-foreground">
+            This ETH is available for faucet use on the test network. Use it
+            responsibly for testing and development purposes.
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => window.open("https://etherscan.io", "_blank")}
+            >
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
