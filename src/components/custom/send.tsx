@@ -12,7 +12,7 @@ export default function SendPage() {
     setTxHash("");
 
     try {
-      const response = await fetch("/api/ser-wallet/send-transaction", {
+      const response = await fetch("/api/server-wallet/send-transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ to, amount }),

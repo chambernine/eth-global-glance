@@ -2,85 +2,43 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
 import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { baseSepolia } from "viem/chains";
 import { usePrivy } from "@privy-io/react-auth";
+import { ethers } from "ethers";
 
 export default function UserSendPage() {
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  //   const [txHash, setTxHash] = useState("");
   const { toast } = useToast();
-
-  //   const handleSend = async () => {
-  //     setLoading(true);
-  //     setTxHash("");
-
-  //     try {
-  //       const response = await fetch("/api/user-wallet/send-transaction", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ from, to, amount }),
-  //       });
-
-  //       if (!response.ok) {
-  //         const errorData = await response.json();
-  //         throw new Error(errorData.error || "Transaction failed");
-  //       }
-
-  //       const data = await response.json();
-
-  //       if (data.success) {
-  //         setTxHash(data.transactionHash);
-  //         toast({
-  //           title: "Transaction Successful",
-  //           description: `Transaction Hash: ${data.transactionHash}`,
-  //         });
-  //       } else {
-  //         throw new Error(data.error || "Transaction failed");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //       toast({
-  //         title: "Error",
-  //         description:
-  //           error instanceof Error ? error.message : "Unknown error occurred",
-  //         variant: "destructive",
-  //       });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   const { user } = usePrivy();
   const smartWallet = user?.linkedAccounts.find(
     (account) => account.type === "smart_wallet"
   );
 
-  console.log(user);
-
-  console.log(smartWallet?.address);
-  // Logs the smart wallet's address
-  console.log(smartWallet?.type);
-  // Logs the smart wallet type (e.g. 'safe', 'kernel', 'light_account', 'biconomy', 'thirdweb', 'coinbase_smart_wallet')
-
   const { client } = useSmartWallets();
   const uiOptions = {
-    title: "Sample title text",
-    description: "Sample description text",
-    buttonText: "Sample button text",
+    title: "testtt",
+    description: "Test",
+    buttonText: "Test",
   };
 
   const handleSendTransaction = async () => {
     setLoading(true);
     try {
+      // Convert amount (ETH) to wei
+      const valueInWei = ethers.parseUnits(amount, 18); // Assuming 18 decimals for ETH
+
       const transactionRequest = {
         chain: baseSepolia,
         to,
-        value: amount,
+        value: valueInWei, // Ensure value is a string
       };
+
+      console.log(transactionRequest);
+
       const txHash = await client?.sendTransaction(transactionRequest, {
         uiOptions,
       });
@@ -126,18 +84,6 @@ export default function UserSendPage() {
       >
         {loading ? "Sending..." : "Send Transaction"}
       </button>
-      {/* {txHash && (
-        <p className="mt-2 text-green-600">
-          Transaction Hash:{" "}
-          <a
-            href={`https://etherscan.io/tx/${txHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {txHash}
-          </a>
-        </p>
-      )} */}
     </div>
   );
 }

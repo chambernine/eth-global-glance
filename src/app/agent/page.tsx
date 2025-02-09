@@ -12,6 +12,8 @@ import Image from "next/image";
 import { models } from "@/data/models";
 import { useToast } from "@/hooks/use-toast";
 import usePollService from "@/service/poll";
+import UserSendPage from "@/components/custom/user-send";
+import SendPage from "@/components/custom/send";
 
 interface EmotionStyle {
   id: string;
@@ -119,6 +121,8 @@ export default function CreatePoll() {
   return (
     <div className="container max-w-2xl mx-auto py-8 px-4">
       <div className="mb-8">
+        <SendPage />
+        <UserSendPage />
         <div className="flex justify-between">
           {steps.map((step, index) => (
             <div key={step} className="flex flex-col items-center flex-1">
