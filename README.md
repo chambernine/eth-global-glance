@@ -1,41 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Glance AI Agent
+
+An AI-powered polling platform that transforms social media insights into engaging interactive polls. Glance AI Agent allows users to generate polls based on trending topics and gauge public sentiment through a simple, intuitive interface.
+
+## Features
+
+- 🤖 **AI-Driven Analysis**: Automatically generates polls from social media trends
+- 📊 **Dynamic Polling**: Create Yes/No or multiple-choice polls instantly
+- 🔍 **Keyword-Based Content**: Get curated content by entering relevant keywords
+- 📈 **Sentiment Analysis**: Track and analyze public opinion on trending topics
+
+## Tech Stack
+
+### Frontend
+- [Next.js](https://nextjs.org) - React framework for production
+
+### Authentication & Blockchain
+- [Privy](https://privy.io) - Secure user authentication
+- Privy Server Wallet - Secure transaction management
+- [Viem](https://viem.sh) - Balance checks and transaction handling
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (LTS version recommended)
+- npm or yarn package manager
 
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/glance-ai-agent.git
+cd glance-ai-agent
+```
+
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up environment variables
+Create a `.env` file in the root directory:
+```env
+NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id
+```
+
+4. Start the development server
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/          # Next.js app directory
+├── components/   # Reusable UI components
+├── hooks/        # Custom React hooks
+└── lib/          # Utility functions and configurations
+```
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+We welcome contributions to Glance AI Agent! Please follow these steps:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Acknowledgments
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# eth-global-glance
-# eth-global-glance
-# eth-global-glance
-# eth-global-glance
-# eth-global-glance
+- Built during ETHGlobal Hackathon
+- Powered by Next.js and Privy
+
+## Support
+
+If you encounter any issues or have questions, please open an issue in the GitHub repository.
+
+---
+
+Made with ❤️ by the Glance AI Agent Team
